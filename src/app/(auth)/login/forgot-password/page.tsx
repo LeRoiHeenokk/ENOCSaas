@@ -3,35 +3,32 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/dashboard/Logo";
-import { signUp } from "@/lib/auth";
+import { resetPassword } from "@/lib/auth";
 
-export default function OnboardingPage() {
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{
-    type: "error" | "success";
-    text: string;
-  } | null>(null);
+  const [message, setMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
     setMessage(null);
-    const result = await signUp(email, password);
+    const result = await resetPassword(email);
     setIsLoading(false);
     if (result.error) {
       setMessage({ type: "error", text: result.error });
       return;
     }
-    if (result.redirect) {
-      window.location.href = result.redirect;
-    }
+    setMessage({
+      type: "success",
+      text: "Si un compte existe pour cet email, vous recevrez un lien de réinitialisation.",
+    });
   }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#000000] px-4">
-      <Link href="/" className="mb-10">
+      <Link href="/login" className="mb-10">
         <Logo className="h-8 w-auto text-white" />
       </Link>
 
@@ -41,10 +38,10 @@ export default function OnboardingPage() {
           className="rounded-xl border border-[#1e3a5f]/50 bg-[#0a0a0a]/80 p-8 shadow-xl"
         >
           <h1 className="mb-2 text-center text-xl font-semibold text-white">
-            Créer un compte
+            Mot de passe oublié
           </h1>
-          <p className="mb-6 text-center text-sm text-white/60">
-            Inscription ENOC Agency
+          <p className="mb-6 text-center text-sm text-white/70">
+            Entrez votre email pour recevoir un lien de réinitialisation.
           </p>
 
           {message && (
@@ -78,29 +75,6 @@ export default function OnboardingPage() {
                 className="w-full rounded-lg border border-[#1e3a5f] bg-black/50 px-4 py-3 text-white placeholder:text-white/40 focus:border-[#1e3a5f] focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]"
               />
             </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-white/90"
-              >
-                Mot de passe
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                autoComplete="new-password"
-                placeholder="••••••••"
-                className="w-full rounded-lg border border-[#1e3a5f] bg-black/50 px-4 py-3 text-white placeholder:text-white/40 focus:border-[#1e3a5f] focus:outline-none focus:ring-1 focus:ring-[#1e3a5f]"
-              />
-              <p className="mt-1 text-xs text-white/50">
-                Minimum 6 caractères
-              </p>
-            </div>
           </div>
 
           <div className="mt-6 space-y-4">
@@ -109,14 +83,14 @@ export default function OnboardingPage() {
               disabled={isLoading}
               className="w-full rounded-lg bg-[#1e3a5f] px-4 py-3 font-medium text-white transition-colors hover:bg-[#2a4a6f] focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50"
             >
-              {isLoading ? "Création..." : "Créer mon compte"}
+              {isLoading ? "Envoi..." : "Envoyer le lien"}
             </button>
 
             <Link
               href="/login"
               className="block text-center text-sm text-white/70 underline-offset-2 hover:text-white hover:underline"
             >
-              Déjà un compte ? Se connecter
+              Retour à la connexion
             </Link>
           </div>
         </form>

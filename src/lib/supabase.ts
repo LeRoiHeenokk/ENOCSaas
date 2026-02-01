@@ -1,4 +1,7 @@
-// Client Supabase — placeholder
-// À configurer avec createClient de @supabase/supabase-js
+/**
+ * Point d’entrée Supabase (legacy).
+ * Préférer : import { createBrowserClient } from "@/lib/supabase/client"
+ *           import { createServerClient } from "@/lib/supabase/server"
+ */
 
-export const supabase = null;
+export { createClient } from "./supabase/client";
